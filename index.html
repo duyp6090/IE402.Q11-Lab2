@@ -1,10 +1,7 @@
-<html>
+<html >
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="initial-scale=1,maximum-scale=1,user-scalable=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Lab2-Bcons 3D</title>
 
@@ -18,6 +15,65 @@
 
   <body>
     <div id="viewDiv"></div>
+
+        <!-- Change to 3D -->
+    <div id="toggleContainer">
+      <button id="toggleBtn">Đổi sang 3D</button>
+
+    </div>
+
+        <!-- Basemap Selection -->
+    <div id="basemapSelect">
+      <span>Loại bản đồ: </span>
+      <select onchange="changeBasemap(this.value)">
+        <option value="streets-navigation-vector">Đường Phố (mặc định)</option>
+        <option value="dark-gray-vector">Dark Gray Vector</option>
+        <option value="streets-night-vector">Đường Phố Dạng Tối</option>
+        <option value="streets-relief-vector">Đường Phố + Địa Hình</option>
+        <option value="streets-vector">Đường Phố Dạng Vector</option>
+        <option value="satellite">Vệ Tinh</option>
+        <option value="osm">Open Street Map</option>
+        <option value="topo-vector">Topographic</option>
+        <option value="terrain">Địa Hình</option>
+        <option value="gray-vector">Xám Đơn Giản</option>
+        <option value="hybrid">Hỗn Hợp</option>
+      </select>
+    </div>
+
+        <!-- Legend -->
+    <div id="map-description">
+      <h2>Chú thích</h2>
+      <p>
+        <img src="images/capital.png" alt="biểu tượng thủ đô" />
+        <span>Thủ đô</span>
+      </p>
+      <p>
+        <img
+          src="images/major_city.png"
+          alt="biểu tượng thành phố trực thuộc trung ương"
+        /><span>Thành phố trực thuộc trung ương</span>
+      </p>
+      <p>
+        <img src="images/city.png" alt="biểu tượng thành phố" />
+        <span>Thành phố</span>
+      </p>
+      <p>
+        <img src="images/town.png" alt="biểu tượng thị xã" />
+        <span>Thị xã</span>
+      </p>
+      <p>
+        <img src="images/road.png" alt="biểu tượng đường bộ" />
+        <span>Đường bộ</span>
+      </p>
+      <p>
+        <img src="images/bridge.png" alt="biểu tượng cầu đường bộ" />
+        <span>Cầu đường bộ</span>
+      </p>
+      <p>
+        <img src="images/border.png" alt="biểu tượng biên giới tỉnh" />
+        <span>Biên giới tỉnh</span>
+      </p>
+    </div>
   </body>
 
   <!-- JS -->

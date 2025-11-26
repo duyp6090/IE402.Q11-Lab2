@@ -30,18 +30,31 @@ require([
     title: "Sketched geometries",
   });
   const map = new Map({
-    basemap: "topo-vector",
+    basemap: "streets-navigation-vector",
     ground: "world-elevation",
   });
 
+  //camera (độ zoom, tọa độ, góc nhìn) cho view 3D
+  let cameraPosition = {
+    position: [106.8008663430442, 10.863971396764873, 300],
+    heading: 0,
+    tilt: 50,
+  };
+
+  // hiển thị view 3D
+  const sceneView = new SceneView({
+    container: null,
+    map: map,
+    viewingMode: "global",
+    camera: cameraPosition,
+    qualityProfile: "high",
+  });
+
+  // 2D
   const view = new SceneView({
     container: "viewDiv",
     map: map,
-    camera: {
-      position: [106.8008663430442, 10.863971396764873, 300],
-      heading: 0,
-      tilt: 50,
-    },
+    camera: cameraPosition
   });
 
   const plane = new SlicePlane({
@@ -115,4 +128,26 @@ require([
   });
 
   map.add(sketchLayer);
+
+  // xử lý event khi chuyển đổi 2D <-> 3D
+  document.getElementById("toggleBtn").addEventListener("click", function () {
+    if (view.container) {
+      // đổi sang 3D
+      view.container = null; // xóa view
+      sceneView.container = "viewDiv"; // gán view mới
+      sceneView.goTo(cameraPosition, { animate: false });
+      this.innerText = "Đổi sang 2D";
+    } else {
+      //đổi sang 2D
+      cameraPosition = sceneView.camera.clone();
+      sceneView.container = null;
+      view.container = "viewDiv";
+      this.innerText = "Đổi sang 3D";
+    }
+  });
+
+  // đổi basemap
+  window.changeBasemap = function (basemap) {
+    map.basemap = basemap;
+  };
 });
