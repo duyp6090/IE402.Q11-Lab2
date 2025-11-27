@@ -54,7 +54,7 @@ require([
   const view = new SceneView({
     container: "viewDiv",
     map: map,
-    camera: cameraPosition
+    camera: cameraPosition,
   });
 
   const plane = new SlicePlane({
@@ -95,37 +95,74 @@ require([
     );
   }
 
-  const house = new Point({
-    x: 106.80084488537197,
-    y: 10.867532728640802,
-    z: 20.2,
-  });
+  // const house = new Point({
+  //   x: 106.80084488537197,
+  //   y: 10.867532728640802,
+  //   z: 20.2,
+  // });
 
-  Mesh.createFromGLTF(house, "./GisLab2_roomglb.glb")
-    .then(function (geometry) {
-      geometry.scale(50, { origin: house });
-      geometry.rotate(0, 0, 300);
-      const graphic = new Graphic({
-        geometry,
-        symbol: {
-          type: "mesh-3d",
-          symbolLayers: [
-            {
-              type: "fill",
-              size: 10000,
-            },
-          ],
-        },
+  // Mesh.createFromGLTF(house, "./GIS-LAB2 Rooms/A2-1.glb")
+  //   .then(function (geometry) {
+  //     geometry.scale(50, { origin: house });
+  //     geometry.rotate(0, 0, 300);
+  //     const graphic = new Graphic({
+  //       geometry,
+  //       symbol: {
+  //         type: "mesh-3d",
+  //         symbolLayers: [
+  //           {
+  //             type: "fill",
+  //             size: 10000,
+  //           },
+  //         ],
+  //       },
+  //     });
+  //     sketchLayer.add(graphic);
+  //   })
+  //   .catch(console.error);
+
+  fetch("./rooms_final.json")
+  .then(res => res.json())
+  .then(async (rooms) => {
+
+    for (const room of rooms) {
+
+      const pos = new Point({
+        x: room.arcgis.lon,    
+        y: room.arcgis.lat,      
+        z: room.arcgis.z
       });
-      sketchLayer.add(graphic);
-    })
-    .catch(console.error);
 
-  const car = new Point({
-    x: 106.80080197002785,
-    y: 10.86677410529397,
-    z: 20.2,
+      try {
+        const mesh = await Mesh.createFromGLTF(
+          pos,
+          "./model/" + room.model
+        );
+
+        const graphic = new Graphic({
+          geometry: mesh,
+          symbol: {
+            type: "mesh-3d",
+            symbolLayers: [{ type: "fill" }]
+          },
+          attributes: {
+            name: room.name,
+            model: room.model,
+          },
+          popupTemplate: {
+            title: "{name}",
+            content: "Model: {model}"
+          }
+        });
+
+        sketchLayer.add(graphic);
+      }
+      catch (err) {
+        console.error("Error loading", room.model, err);
+      }
+    }
   });
+
 
   map.add(sketchLayer);
 
