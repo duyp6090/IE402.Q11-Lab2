@@ -93,8 +93,8 @@ require([
   //   );
   // }
 
-  const FLOOR_COUNT = 3;
-  const FLOOR_HEIGHT = 5.606; // m, chiều cao 1 tầng
+  const FLOOR_COUNT = 1;
+  const FLOOR_HEIGHT = 5.608; // m, chiều cao 1 tầng
 
   fetch("./rooms_final.json")
     .then((res) => res.json())
