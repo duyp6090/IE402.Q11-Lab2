@@ -36,7 +36,7 @@ require([
 
   //camera (độ zoom, tọa độ, góc nhìn) cho view 3D
   let cameraPosition = {
-    position: [106.8008663430442, 10.863971396764873, 300],
+    position: [106.8028663430442, 10.860401396764873, 300],
     heading: 0,
     tilt: 50,
   };
@@ -95,74 +95,89 @@ require([
     );
   }
 
-  // const house = new Point({
-  //   x: 106.80084488537197,
-  //   y: 10.867532728640802,
-  //   z: 20.2,
-  // });
-
-  // Mesh.createFromGLTF(house, "./GIS-LAB2 Rooms/A2-1.glb")
-  //   .then(function (geometry) {
-  //     geometry.scale(50, { origin: house });
-  //     geometry.rotate(0, 0, 300);
-  //     const graphic = new Graphic({
-  //       geometry,
-  //       symbol: {
-  //         type: "mesh-3d",
-  //         symbolLayers: [
-  //           {
-  //             type: "fill",
-  //             size: 10000,
-  //           },
-  //         ],
-  //       },
-  //     });
-  //     sketchLayer.add(graphic);
-  //   })
-  //   .catch(console.error);
+  const FLOOR_COUNT = 3;
+  const FLOOR_HEIGHT = 5.606; // m, chiều cao 1 tầng
 
   fetch("./rooms_final.json")
-  .then(res => res.json())
-  .then(async (rooms) => {
+    .then((res) => res.json())
+    .then(async (rooms) => {
+      for (const room of rooms) {
+        const baseZ = room.arcgis.z;
 
-    for (const room of rooms) {
+        if (room.repeatFloors === false) {
+          const pos = new Point({
+            x: room.arcgis.lon,
+            y: room.arcgis.lat,
+            z: baseZ,
+          });
 
-      const pos = new Point({
-        x: room.arcgis.lon,    
-        y: room.arcgis.lat,      
-        z: room.arcgis.z
-      });
-
-      try {
-        const mesh = await Mesh.createFromGLTF(
-          pos,
-          "./model/" + room.model
-        );
-
-        const graphic = new Graphic({
-          geometry: mesh,
-          symbol: {
-            type: "mesh-3d",
-            symbolLayers: [{ type: "fill" }]
-          },
-          attributes: {
-            name: room.name,
-            model: room.model,
-          },
-          popupTemplate: {
-            title: "{name}",
-            content: "Model: {model}"
+          try {
+            const mesh = await Mesh.createFromGLTF(
+              pos,
+              "./model/" + room.model
+            );
+            const graphic = new Graphic({
+              geometry: mesh,
+              symbol: {
+                type: "mesh-3d",
+                symbolLayers: [{ type: "fill" }],
+              },
+              attributes: {
+                name: room.name,
+                model: room.model,
+              },
+            });
+            sketchLayer.add(graphic);
+          } catch (err) {
+            console.error("Error loading", room.model, err);
           }
-        });
 
-        sketchLayer.add(graphic);
-      }
-      catch (err) {
-        console.error("Error loading", room.model, err);
-      }
-    }
-  });
+          continue; // sang object tiếp theo
+        }
 
+        // Còn lại là căn hộ
+        for (let floorIdx = 0; floorIdx < FLOOR_COUNT; floorIdx++) {
+          const pos = new Point({
+            x: room.arcgis.lon,
+            y: room.arcgis.lat,
+            z: baseZ + floorIdx * FLOOR_HEIGHT,
+          });
+
+          try {
+            const mesh = await Mesh.createFromGLTF(
+              pos,
+              "./model/" + room.model
+            );
+
+            const graphic = new Graphic({
+              geometry: mesh,
+              symbol: {
+                type: "mesh-3d",
+                symbolLayers: [{ type: "fill" }],
+              },
+              attributes: {
+                name: `${room.name} - Tầng ${floorIdx + 1}`,
+                model: room.model,
+                floor: floorIdx + 1,
+              },
+              popupTemplate: {
+                title: "{name}",
+                content: [
+                  {
+                    type: "text",
+                    text: "Model: {model}",
+                  },
+                ],
+              },
+            });
+
+            sketchLayer.add(graphic);
+          } catch (err) {
+            console.error("Error loading", room.model, err);
+          }
+        }
+      }
+    });
 
   map.add(sketchLayer);
 
