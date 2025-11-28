@@ -262,5 +262,15 @@
       "z": 10
     },
     "repeatFloors": false
+  },
+  {
+    "name": "Roof top",
+    "model": "rooftop.glb",
+    "arcgis": {
+      "lon": 106.80324261764942,
+      "lat": 10.863352592466534,
+      "z": 40
+    },
+    "repeatFloors": false
   }
 ]

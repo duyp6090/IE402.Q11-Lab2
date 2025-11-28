@@ -57,43 +57,41 @@ require([
     camera: cameraPosition,
   });
 
-  const plane = new SlicePlane({
-    position: {
-      latitude: 10.867532728640802,
-      longitude: 106.80084488537197,
-      z: 50,
-    },
-    tilt: 32.62,
-    width: 100,
-    height: 100,
-    heading: 0.46,
-  });
-  let sliceWidget = null;
-  let doorsLayer = null;
-  let sliceTiltEnabled = true;
-  const excludedLayers = [];
+  // const plane = new SlicePlane({
+  //   position: {
+  //     latitude: 10.867532728640802,
+  //     longitude: 106.80084488537197,
+  //     z: 50,
+  //   },
+  //   tilt: 32.62,
+  //   width: 100,
+  //   height: 100,
+  //   heading: 0.46,
+  // });
+  // let sliceWidget = null;
+  // let doorsLayer = null;
+  // let sliceTiltEnabled = true;
+  // const excludedLayers = [];
 
-  sketchLayer.when(() => {
-    // Iterate through the flat array of sublayers and extract the ones
-    // that should be excluded from the slice widget
+  // sketchLayer.when(() => {
 
-    setSliceWidget();
-  });
+  //   setSliceWidget();
+  // });
 
-  function setSliceWidget() {
-    sliceWidget = new Slice({
-      view: view,
-      container: "sliceContainer",
-    });
-    sliceWidget.viewModel.excludedLayers.addMany(excludedLayers);
-    sliceTiltEnabled = true;
-    sliceWidget.viewModel.tiltEnabled = sliceTiltEnabled;
-    sliceWidget.viewModel.shape = plane;
-    reactiveUtils.watch(
-      () => sliceWidget.viewModel.state,
-      (state) => {}
-    );
-  }
+  // function setSliceWidget() {
+  //   sliceWidget = new Slice({
+  //     view: view,
+  //     container: "sliceContainer",
+  //   });
+  //   sliceWidget.viewModel.excludedLayers.addMany(excludedLayers);
+  //   sliceTiltEnabled = true;
+  //   sliceWidget.viewModel.tiltEnabled = sliceTiltEnabled;
+  //   sliceWidget.viewModel.shape = plane;
+  //   reactiveUtils.watch(
+  //     () => sliceWidget.viewModel.state,
+  //     (state) => {}
+  //   );
+  // }
 
   const FLOOR_COUNT = 3;
   const FLOOR_HEIGHT = 5.606; // m, chiều cao 1 tầng
